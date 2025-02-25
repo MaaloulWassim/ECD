@@ -13,6 +13,4 @@ const TopConsumers = ({ consumers }) => (
     </List>
   </Box>
 );
-
-
 export default TopConsumers;
