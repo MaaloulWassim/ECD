@@ -1,0 +1,21 @@
+# Django
+venv/
+*.pyc
+__pycache__/
+db.sqlite3
+.env
+*.log
+*.pot
+*.py[co]
+.DS_Store
+
+# React
+frontend/node_modules/
+frontend/.env
+frontend/build/
+frontend/.eslintcache
+frontend/coverage/
+
+# IDE
+.vscode/
+.idea/
