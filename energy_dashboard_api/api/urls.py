@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import energy_data
+from .views import energy_data_view
 
 urlpatterns = [
-    path('energy/', energy_data, name='energy-data'),
+    path('energy/', energy_data_view, name='energy-data'),
 ]

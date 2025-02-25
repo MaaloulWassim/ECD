@@ -5,9 +5,22 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #ebf6fb;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+h1, h2 {
+  color: #182a4c;
+}
+
+.MuiTextField-root, .MuiButton-root {
+  margin: 8px !important;
+}
+
+.recharts-wrapper {
+  margin: 0 auto;
 }
