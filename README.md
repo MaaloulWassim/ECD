@@ -28,7 +28,7 @@ A full-stack dashboard for visualizing energy consumption data, built with:
    ```bash
    cd energy_dashboard_api 
  
-   pip install -r requirements.txt 
+   pip install Django djangorestframework django-cors-headers 
 
    python manage.py runserver
 
