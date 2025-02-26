@@ -1,6 +1,12 @@
 from django.http import JsonResponse
 from datetime import datetime
 from .data import energy_data
+from django.http import JsonResponse
+from datetime import datetime
+from rest_framework.decorators import api_view
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+from .data import energy_data
 
 def energy_data_view(request):
     # Extract query parameters
