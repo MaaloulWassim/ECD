@@ -11,26 +11,44 @@ import PaginationControls from './components/PaginationControls';
 
 const App = () => {
   const [data, setData] = useState({ total_consumption: [], top_consumers: [] });
-  const [compareData, setCompareData] = useState({ facility1: null, facility2: null });
+  const [compareData, setCompareData] = useState({ name1: null, name2: null });
   const [filters, setFilters] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [compareMode, setCompareMode] = useState(false);
-  const [facility1, setFacility1] = useState('');
-  const [facility2, setFacility2] = useState('');
+  const [name1, setName1] = useState('');
+  const [name2, setName2] = useState('');
+  const [names, setNames] = useState([]); // List of unique names
+
+  // Fetch unique names when the app loads
+  useEffect(() => {
+    const fetchNames = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/energy/');
+        const uniqueNames = [...new Set(response.data.top_consumers.map(consumer => consumer.name))];
+        setNames(uniqueNames);
+      } catch (error) {
+        console.error('Error fetching names:', error);
+      }
+    };
+    fetchNames();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get('http://localhost:8000/api/energy/', {
           params: {
-            ...filters,
+            energy_form: filters.energyForm,
+            system_type: filters.systemType,
+            start_date: filters.startDate,
+            end_date: filters.endDate,
             page: currentPage,
             page_size: 4,
           },
         });
         setData(response.data);
-        setTotalPages(Math.ceil(response.data.total_consumers / 4));
+        setTotalPages(Math.ceil(response.data.total_consumers / 4)); 
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -45,18 +63,27 @@ const App = () => {
   const handleCompare = async () => {
     try {
       const response1 = await axios.get('http://localhost:8000/api/energy/', {
-        params: { facility: facility1 },
+        params: { name: name1 },
       });
       const response2 = await axios.get('http://localhost:8000/api/energy/', {
-        params: { facility: facility2 },
+        params: { name: name2 },
       });
       setCompareData({
-        facility1: response1.data,
-        facility2: response2.data,
+        name1: response1.data,
+        name2: response2.data,
       });
     } catch (error) {
       console.error('Error fetching comparison data:', error);
     }
+  };
+
+  const resetFilters = () => {
+    setFilters({
+      energyForm: '',
+      systemType: '',
+      startDate: null,
+      endDate: null,
+    });
   };
 
   return (
@@ -67,60 +94,56 @@ const App = () => {
         <Button
           variant="contained"
           onClick={() => setCompareMode(!compareMode)}
-          sx={{ mb: 2, bgcolor: '#4CAF50', '&:hover': { bgcolor: '#45a049' } }}
+          sx={{ bgcolor: '#bbc40c'  , color:'#182a4c' , '&:hover': { bgcolor: '#182a4c' , color:'#bbc40c' } }}
         >
           {compareMode ? 'Exit Compare Mode' : 'Enter Compare Mode'}
         </Button>
 
         {compareMode ? (
           <>
-            <Typography variant="h6" sx={{ mb: 2 }}>Compare Facilities</Typography>
+            <Typography variant="h6" sx={{ mb: 2 }}>Compare Names</Typography>
             <Box sx={{ display: 'flex', gap: 4, mb: 4 }}>
               <TextField
                 select
-                label="Facility 1"
-                value={facility1}
-                onChange={(e) => setFacility1(e.target.value)}
+                label="Name 1"
+                value={name1}
+                onChange={(e) => setName1(e.target.value)}
                 sx={{ minWidth: 200 }}
               >
-                <MenuItem value="">Select Facility</MenuItem>
-                <MenuItem value="Factory A">Factory A</MenuItem>
-                <MenuItem value="Building B">Building B</MenuItem>
-                <MenuItem value="Office C">Office C</MenuItem>
-                <MenuItem value="Warehouse D">Warehouse D</MenuItem>
-                <MenuItem value="Store E">Store E</MenuItem>
+                <MenuItem value="">Select Name</MenuItem>
+                {names.map((name) => (
+                  <MenuItem key={name} value={name}>{name}</MenuItem>
+                ))}
               </TextField>
               <TextField
                 select
-                label="Facility 2"
-                value={facility2}
-                onChange={(e) => setFacility2(e.target.value)}
+                label="Name 2"
+                value={name2}
+                onChange={(e) => setName2(e.target.value)}
                 sx={{ minWidth: 200 }}
               >
-                <MenuItem value="">Select Facility</MenuItem>
-                <MenuItem value="Factory A">Factory A</MenuItem>
-                <MenuItem value="Building B">Building B</MenuItem>
-                <MenuItem value="Office C">Office C</MenuItem>
-                <MenuItem value="Warehouse D">Warehouse D</MenuItem>
-                <MenuItem value="Store E">Store E</MenuItem>
+                <MenuItem value="">Select Name</MenuItem>
+                {names.map((name) => (
+                  <MenuItem key={name} value={name}>{name}</MenuItem>
+                ))}
               </TextField>
               <Button
                 variant="contained"
                 onClick={handleCompare}
-                sx={{ height: 56, bgcolor: '#4CAF50', '&:hover': { bgcolor: '#45a049' } }}
+                sx={{ bgcolor: '#bbc40c'  , color:'#182a4c' , '&:hover': { bgcolor: '#182a4c' , color:'#bbc40c' } }}
               >
                 Compare
               </Button>
             </Box>
             <Box>
-              <Typography variant="h6">Facility 1: {facility1}</Typography>
-              <EnergyChart data={compareData.facility1?.total_consumption || []} />
-              <TopConsumers consumers={compareData.facility1?.top_consumers || []} />
+              <Typography variant="h6">Name 1: {name1}</Typography>
+              <EnergyChart data={compareData.name1?.total_consumption || []} />
+              <TopConsumers consumers={compareData.name1?.top_consumers || []} />
             </Box>
             <Box sx={{ mt: 4 }}>
-              <Typography variant="h6">Facility 2: {facility2}</Typography>
-              <EnergyChart data={compareData.facility2?.total_consumption || []} />
-              <TopConsumers consumers={compareData.facility2?.top_consumers || []} />
+              <Typography variant="h6">Name 2: {name2}</Typography>
+              <EnergyChart data={compareData.name2?.total_consumption || []} />
+              <TopConsumers consumers={compareData.name2?.top_consumers || []} />
             </Box>
           </>
         ) : (
@@ -151,18 +174,33 @@ const App = () => {
                 <MenuItem value="Production Warehouse">Production Warehouse</MenuItem>
               </TextField>
               <DatePicker
+              
                 selectsRange
                 startDate={filters.startDate}
                 endDate={filters.endDate}
                 onChange={(update) => setFilters({ ...filters, startDate: update[0], endDate: update[1] })}
                 placeholderText="Select date range"
+                customInput={
+                  <TextField
+                    sx={{ minWidth: 200 }}
+                    label="Date Range"
+                    variant="outlined"
+                    fullWidth
+                  />}
               />
               <Button
                 variant="contained"
                 onClick={() => setFilters({ ...filters })}
-                sx={{ height: 56, bgcolor: '#4CAF50', '&:hover': { bgcolor: '#45a049' } }}
+                sx={{ bgcolor: '#bbc40c'  , color:'#182a4c' , '&:hover': { bgcolor: '#182a4c' , color:'#bbc40c' } }}
               >
                 Apply Filters
+              </Button>
+              <Button
+                variant="contained"
+                onClick={resetFilters}
+                sx={{ bgcolor: '#ff5722', color: '#fff', '&:hover': { bgcolor: '#e64a19' } }}
+              >
+                Reset Filters
               </Button>
             </Box>
             <EnergyChart data={data.total_consumption} />
