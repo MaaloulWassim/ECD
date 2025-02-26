@@ -30,7 +30,7 @@ A full-stack dashboard for visualizing energy consumption data, built with:
  
    pip install -r requirements.txt 
 
-   python manage.py runserver ```
+   python manage.py runserver
 
 - API available at http://localhost:8000/api/energy/
 
@@ -42,7 +42,7 @@ A full-stack dashboard for visualizing energy consumption data, built with:
 
    npm install
 
-   npm start ```
+   npm start 
 
 - Access dashboard at http://localhost:3000
 
