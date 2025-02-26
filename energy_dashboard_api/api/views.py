@@ -8,7 +8,10 @@ def energy_data_view(request):
     end_date = request.GET.get('end_date')
     energy_form = request.GET.get('energy_form')
     system_type = request.GET.get('system_type')
-    name = request.GET.get('name')
+
+    name = request.GET.get('name') # facility name used for comparison
+    
+    #start with first page and page size always 4
     page = int(request.GET.get('page', 1))  
     page_size = int(request.GET.get('page_size', 4)) 
 
@@ -31,7 +34,7 @@ def energy_data_view(request):
            (not name or consumer["name"] == name):
             filtered_top_consumers.append(consumer)
 
-    # Paginate top_consumers
+    # Paginate top_consumers 
     start_index = (page - 1) * page_size
     end_index = start_index + page_size
     paginated_top_consumers = filtered_top_consumers[start_index:end_index]
@@ -39,9 +42,10 @@ def energy_data_view(request):
     # Get unique names for dropdown
     unique_names = list(set(consumer["name"] for consumer in energy_data["top_consumers"]))
 
+    #response data with for each use case 
     return JsonResponse({
         "total_consumption": filtered_total_consumption,
         "top_consumers": paginated_top_consumers,
         "total_consumers": len(filtered_top_consumers), 
-        "unique_names": unique_names 
+        "unique_names": unique_names #for the select-items
     })

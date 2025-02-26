@@ -13,14 +13,14 @@ const App = () => {
   const [data, setData] = useState({ total_consumption: [], top_consumers: [] });
   const [compareData, setCompareData] = useState({ name1: null, name2: null });
   const [filters, setFilters] = useState({});
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1); // current page
+  const [totalPages, setTotalPages] = useState(1); // number of all pagees
   const [compareMode, setCompareMode] = useState(false);
-  const [name1, setName1] = useState('');
-  const [name2, setName2] = useState('');
+  const [name1, setName1] = useState('');  // name of faciliy 1
+  const [name2, setName2] = useState(''); // name of facility 2
   const [names, setNames] = useState([]); // List of unique names
 
-  // Fetch unique names when the app loads
+  // Fetch unique names when the app loads : used for the items in the select menu
   useEffect(() => {
     const fetchNames = async () => {
       try {
@@ -34,6 +34,7 @@ const App = () => {
     fetchNames();
   }, []);
 
+  // fetch data for all filters and updating the total pages 
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -48,7 +49,7 @@ const App = () => {
           },
         });
         setData(response.data);
-        setTotalPages(Math.ceil(response.data.total_consumers / 4)); 
+        setTotalPages(Math.ceil(response.data.total_consumers / 4)); //calc the number of pages from the total of customers
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -56,9 +57,11 @@ const App = () => {
     fetchData();
   }, [filters, currentPage]);
 
+
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
+
 
   const handleCompare = async () => {
     try {
@@ -77,6 +80,7 @@ const App = () => {
     }
   };
 
+  // reset button to reset all filt
   const resetFilters = () => {
     setFilters({
       energyForm: '',
