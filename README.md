@@ -23,31 +23,26 @@ A full-stack dashboard for visualizing energy consumption data, built with:
 ## Setup
 
 ### Backend (Django)
-1. Navigate to the `api` folder:
+
+- Navigate to the `energy_dashboard_api` folder:
    ```bash
-   cd api ```
+   cd energy_dashboard_api 
+ 
+   pip install -r requirements.txt 
 
-   ```bash 
-   pip install -r requirements.txt```
-
-   ```bash 
    python manage.py runserver ```
 
 - API available at http://localhost:8000/api/energy/
 
 
 ### Frontend (React)
-1- Navigate to the frontend folder:
+- Navigate to the 'frontend' folder:
    ```bash
-   cd frontend```
+   cd frontend
 
-2- Install dependencies:
-   ```bash
-   npm install```
+   npm install
 
-3- Start the app:
-   ```bash 
    npm start ```
-   
+
 - Access dashboard at http://localhost:3000
 
