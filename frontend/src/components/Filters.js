@@ -48,21 +48,6 @@ const Filters = ({ onFilter }) => {
           <MenuItem value="Store">Store</MenuItem>
           <MenuItem value="Production Warehouse">Production Warehouse</MenuItem>
         </TextField>
-
-        <TextField
-          select
-          label="Facility"
-          value={facility}
-          onChange={(e) => setFacility(e.target.value)}
-          sx={{ minWidth: 200 }}
-        >
-          <MenuItem value="">All</MenuItem>
-          <MenuItem value="Factory A">Factory A</MenuItem>
-          <MenuItem value="Building B">Building B</MenuItem>
-          <MenuItem value="Office C">Office C</MenuItem>
-          <MenuItem value="Warehouse D">Warehouse D</MenuItem>
-          <MenuItem value="Store E">Store E</MenuItem>
-        </TextField>
       <DatePicker
         selectsRange
         startDate={dateRange[0]}

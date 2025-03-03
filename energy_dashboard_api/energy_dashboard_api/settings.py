@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'energy_dashboard_api',
     'api',
-    'drf_yasg'
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [

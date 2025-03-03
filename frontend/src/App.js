@@ -25,8 +25,8 @@ const App = () => {
     const fetchNames = async () => {
       try {
         const response = await axios.get('http://localhost:8000/api/energy/');
-        const uniqueNames = [...new Set(response.data.top_consumers.map(consumer => consumer.name))];
-        setNames(uniqueNames);
+        console.log(response.data.unique_names)
+        setNames(response.data.unique_names);
       } catch (error) {
         console.error('Error fetching names:', error);
       }
@@ -65,16 +65,19 @@ const App = () => {
 
   const handleCompare = async () => {
     try {
-      const response1 = await axios.get('http://localhost:8000/api/energy/', {
-        params: { name: name1 },
-      });
-      const response2 = await axios.get('http://localhost:8000/api/energy/', {
-        params: { name: name2 },
-      });
+      const [response1, response2] = await Promise.all([
+        axios.get('http://localhost:8000/api/energy/', { params: { name: name1 } }),
+        axios.get('http://localhost:8000/api/energy/', { params: { name: name2 } })
+      ]);
+  
       setCompareData({
         name1: response1.data,
         name2: response2.data,
       });
+  
+      setNames(prev => [
+        ...new Set([...prev, name1, name2])
+      ]);
     } catch (error) {
       console.error('Error fetching comparison data:', error);
     }
@@ -90,6 +93,14 @@ const App = () => {
     });
   };
 
+const resetCompareMode = ()=>{
+  if (window.confirm('Are you sure you want to reset the comparison?')) {
+    setCompareMode(false);
+    setName1('');
+    setName2('');
+    setCompareData({ name1: null, name2: null });
+  }
+}
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Header />
@@ -134,9 +145,18 @@ const App = () => {
               <Button
                 variant="contained"
                 onClick={handleCompare}
+                
                 sx={{ bgcolor: '#bbc40c'  , color:'#182a4c' , '&:hover': { bgcolor: '#182a4c' , color:'#bbc40c' } }}
               >
                 Compare
+              </Button>
+              <Button
+                variant="contained"
+                onClick={resetCompareMode}
+                disabled={!name1 && !name2}
+                sx={{ bgcolor: '#ff5722', color: '#fff', '&:hover': { bgcolor: '#e64a19' } }}
+              >
+                Reset
               </Button>
             </Box>
             <Box>

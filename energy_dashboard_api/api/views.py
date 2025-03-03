@@ -2,11 +2,9 @@ from django.http import JsonResponse
 from datetime import datetime
 from .data import energy_data
 from django.http import JsonResponse
-from datetime import datetime
 from rest_framework.decorators import api_view
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-from .data import energy_data
 
 def energy_data_view(request):
     # Extract query parameters
@@ -46,7 +44,13 @@ def energy_data_view(request):
     paginated_top_consumers = filtered_top_consumers[start_index:end_index]
 
     # Get unique names for dropdown
-    unique_names = list(set(consumer["name"] for consumer in energy_data["top_consumers"]))
+    unique_names = list(set(
+    consumer["name"] 
+    for consumer in energy_data["top_consumers"] 
+    if (not energy_form or consumer["energy_form"] == energy_form) and
+       (not system_type or consumer["system_type"] == system_type)))
+    
+    #print(unique_names)
 
     #response data with for each use case 
     return JsonResponse({
