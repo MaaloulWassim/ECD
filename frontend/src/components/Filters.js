@@ -9,7 +9,6 @@ const Filters = ({ onFilter }) => {
   const [energyForm, setEnergyForm] = useState('');
   const [systemType, setSystemType] = useState('');
   const [dateRange, setDateRange] = useState([null, null]);
-  const [facility, setFacility] = useState('');
 
   const handleSubmit = () => {
     onFilter({
@@ -17,7 +16,6 @@ const Filters = ({ onFilter }) => {
       systemType,
       startDate: dateRange[0] ? dateRange[0].toISOString().split('T')[0] : null,
       endDate: dateRange[1] ? dateRange[1].toISOString().split('T')[0] : null,
-      facility,
     });
   };
 

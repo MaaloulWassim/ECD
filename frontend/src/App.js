@@ -61,20 +61,26 @@ const App = () => {
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
-
+  
   const handleCompare = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/api/energy/', {
-        params: { name: name1 },
-      });
+      const [response1, response2] = await Promise.all([
+        axios.get('http://localhost:8000/api/energy/', { params: { name: name1 } }),
+        axios.get('http://localhost:8000/api/energy/', { params: { name: name2 } })
+      ]);
+  
       setCompareData({
-        name1: response.data,
+        name1: response1.data,
+        name2: response2.data,
       });
+  
+      setNames(prev => [
+        ...new Set([...prev, name1, name2])
+      ]);
     } catch (error) {
       console.error('Error fetching comparison data:', error);
     }
   };
-
   // reset button to reset all filt
   const resetFilters = () => {
     setFilters({
@@ -108,41 +114,56 @@ const resetCompareMode = ()=>{
 
         {compareMode ? (
           <>
-            <Typography variant="h6" sx={{ mb: 2 }}>Compare Names</Typography>
-            <Box sx={{ display: 'flex', gap: 4, mb: 4 }}>
-            <TextField
-        select
-        label="Compare With"
-        value={name1}
-        onChange={(e) => setName1(e.target.value)}
-        sx={{ minWidth: 200 }}
-      >
-        <MenuItem value="">Select Facility</MenuItem>
-        {names.map((name) => (
-          <MenuItem key={name} value={name}>{name}</MenuItem>
-        ))}
-      </TextField>
-
-      <Button
-        variant="contained"
-        onClick={handleCompare}
-        sx={{ bgcolor: '#bbc40c', color: '#182a4c', '&:hover': { bgcolor: '#182a4c', color: '#bbc40c' } }}
-      >
-        Compare
-      </Button>
-      <Button
-        variant="contained"
-        onClick={resetCompareMode}
-        disabled={!name1 && !name2}
-        sx={{ bgcolor: '#ff5722', color: '#fff', '&:hover': { bgcolor: '#e64a19' } }}
-      >
-      Reset
-      </Button>
-              </Box>
-              <EnergyChart 
-              data={data.total_consumption} 
-               compareData={compareMode ? compareData.name1?.total_consumption : null}
-              />
+           <Box sx={{ display: 'flex', gap: 4, mb: 4 }}>
+              <TextField
+                select
+                label="Name 1"
+                value={name1}
+                onChange={(e) => setName1(e.target.value)}
+                sx={{ minWidth: 200 }}
+              >
+                <MenuItem value="">Select Name</MenuItem>
+                {names.map((name) => (
+                  <MenuItem key={name} value={name}>{name}</MenuItem>
+                ))}
+              </TextField>
+              <TextField
+                select
+                label="Name 2"
+                value={name2}
+                onChange={(e) => setName2(e.target.value)}
+                sx={{ minWidth: 200 }}
+              >
+                <MenuItem value="">Select Name</MenuItem>
+                {names.map((name) => (
+                  <MenuItem key={name} value={name}>{name}</MenuItem>
+                ))}
+              </TextField>
+              <Button
+                variant="contained"
+                onClick={handleCompare}
+                
+                sx={{ bgcolor: '#bbc40c'  , color:'#182a4c' , '&:hover': { bgcolor: '#182a4c' , color:'#bbc40c' } }}
+              >
+                Compare
+              </Button>
+              <Button
+                variant="contained"
+                onClick={resetCompareMode}
+                disabled={!name1 && !name2}
+                sx={{ bgcolor: '#ff5722', color: '#fff', '&:hover': { bgcolor: '#e64a19' } }}
+              >
+                Reset
+              </Button>
+            </Box>
+            <Box>
+              <Typography variant="h6">Name 1: {name1}</Typography>
+              <EnergyChart data={compareData.name1?.total_consumption || []} />
+            </Box>
+            <Box sx={{ mt: 4 }}>
+              <Typography variant="h6">Name 2: {name2}</Typography>
+              <EnergyChart data={compareData.name2?.total_consumption || []} />
+            </Box>
           </>
         ) : (
           <>

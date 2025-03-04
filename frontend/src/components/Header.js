@@ -5,7 +5,7 @@ const Header = () => {
   return (
     <AppBar position="static" sx={{ bgcolor: '#f1fbfb' }} >
       <Toolbar>
-        <Typography variant="h6"  sx={{ color: '#182a4c' }} > <p >Energy Consumer Dashboard</p></Typography>
+        <Typography variant="h6"  sx={{ color: '#182a4c' }} > <p >ECD</p></Typography>
       </Toolbar>
     </AppBar>
   );
